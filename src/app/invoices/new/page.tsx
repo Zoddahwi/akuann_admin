@@ -187,7 +187,6 @@ export default function NewInvoicePage() {
                       <input
                         type="number"
                         required
-                        min="0"
                         step="0.01"
                         value={item.rate || ""}
                         onChange={(e) => updateItem(index, "rate", e.target.value)}
@@ -199,7 +198,6 @@ export default function NewInvoicePage() {
                       <input
                         type="number"
                         required
-                        min="1"
                         value={item.quantity || ""}
                         onChange={(e) => updateItem(index, "quantity", e.target.value)}
                         className="w-full bg-transparent border-none focus:ring-0 text-sm"
