@@ -159,8 +159,8 @@ export default function NewInvoicePage() {
             </button>
           </div>
 
-          <div className="overflow-hidden rounded-2xl border border-neutral-100">
-            <table className="w-full text-left border-collapse">
+          <div className="overflow-x-auto overflow-y-hidden rounded-2xl border border-neutral-100">
+            <table className="w-full text-left border-collapse min-w-[700px]">
               <thead className="bg-neutral-900 text-white text-[10px] font-bold uppercase tracking-widest">
                 <tr>
                   <th className="px-6 py-3">Description</th>
