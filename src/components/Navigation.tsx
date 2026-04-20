@@ -18,7 +18,7 @@ export function Navigation() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 border-b border-neutral-200 bg-white/80 backdrop-blur-lg">
+    <header className={`sticky top-0 z-50 border-b border-neutral-200 transition-colors ${isOpen ? 'bg-white' : 'bg-white/80 backdrop-blur-lg'}`}>
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <Link href="/" className="flex items-center gap-2 group z-50">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-900 text-white transition-transform group-hover:scale-110">
@@ -63,7 +63,7 @@ export function Navigation() {
 
       {/* Mobile Nav Overlay */}
       {isOpen && (
-        <div className="fixed inset-0 z-40 bg-white/95 backdrop-blur-sm md:hidden flex flex-col justify-center px-6 pt-20 pb-6">
+        <div className="fixed inset-0 z-40 bg-white md:hidden flex flex-col px-6 pt-24 pb-6 overflow-y-auto">
           <nav className="flex flex-col gap-6">
             {navItems.map((item) => {
               const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
