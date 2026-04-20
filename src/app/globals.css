@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fcfcfc;
+  --foreground: #111111;
+  --primary: #b2998a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  border-color: var(--color-neutral-200);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* ═══════════════════════════════════════════════════════
+   PRODUCT CARDS SYSTEM
+   ═══════════════════════════════════════════════════════ */
+.pc-grid {
+  --pc-gap: 2rem;
+  --pc-col-min: 16rem;
+  --pc-col-max-count: 4;
+
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(
+      min(100%, max(var(--pc-col-min), calc((100% - var(--pc-gap) * (var(--pc-col-max-count) - 1)) / var(--pc-col-max-count)))),
+      1fr
+    )
+  );
+  gap: var(--pc-gap);
+}
+
+.pc-card {
+  --_accent: #232d3f; 
+  --_radius: 32px;
+  --_padding: 20px;
+  --_inner-radius: calc(var(--_radius) - var(--_padding));
+  --_cat-radius: 16px;
+  --_duration: 350ms;
+
+  display: grid;
+  grid-template-columns: 1fr; 
+  grid-template-rows: auto auto auto 1fr auto auto;
+  gap: 0.5rem;
+  padding: var(--_padding);
+  border-radius: var(--_radius);
+  background: #fff;
+  color: #232d3f;
+  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
+  text-decoration: none;
+  transition: transform var(--_duration) ease, box-shadow var(--_duration) ease;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #f0f0f0;
+}
+
+.pc-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px -12px rgba(0,0,0,0.15);
+  border-color: #b2998a;
+}
+
+.pc-card__thumb-stack {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  position: relative;
+}
+
+.pc-card__thumb-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1.25;
+  border-radius: var(--_inner-radius);
+  overflow: hidden;
+  background: #f9f9f9;
+}
+
+.pc-card__thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--_duration) ease;
+}
+
+.pc-card:hover .pc-card__thumb-img {
+  transform: scale(1.08);
+}
+
+.pc-card__category {
+  grid-column: 1;
+  grid-row: 1;
+  z-index: 2;
+  place-self: start;
+  position: relative;
+  padding: 0.8em 1.5em;
+  background: #fff;
+  border-bottom-right-radius: var(--_cat-radius);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #232d3f;
+}
+
+.pc-card__heading {
+  grid-row: 3;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #232d3f;
+  margin-top: 0.5rem;
+}
+
+.pc-card__desc {
+  grid-row: 4;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: #666;
+  margin-top: 0.25rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.pc-card__price-row {
+  grid-row: 5;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f5f5f5;
+}
+
+.pc-card__btn-group {
+  grid-row: 6;
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}

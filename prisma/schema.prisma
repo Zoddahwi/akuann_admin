@@ -1,0 +1,152 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  fullName  String
+  phone     String?
+  role      Role     @default(CUSTOMER)
+  orders    Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+model Gown {
+  id         String      @id @default(cuid())
+  slug       String?     @unique
+  name       String
+  description String
+  price      Float
+  sizes      String[]
+  images     String[]
+  category   String
+  subcategory String?
+  isCustomizable Boolean   @default(false)
+  isSoldOut  Boolean    @default(false)
+  rating     Float      @default(5.0)
+  reviewsCount Int      @default(0)
+  orderItems OrderItem[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@index([category])
+  @@index([subcategory])
+}
+
+model Order {
+  id          String       @id @default(cuid())
+  userId      String
+  user        User         @relation(fields: [userId], references: [id])
+  status      OrderStatus  @default(PENDING)
+  totalAmount Float
+  orderItems  OrderItem[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  COMPLETED
+  CANCELLED
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id])
+  gownId    String
+  gown      Gown    @relation(fields: [gownId], references: [id])
+  size      String
+  quantity  Int
+  price     Float
+}
+
+model ClientOnboarding {
+  id                 String   @id @default(cuid())
+
+  // Section 1 – Client Information
+  fullName           String
+  phoneNumber        String
+  emailAddress       String
+  instagramHandle    String?
+  eventDate          String?
+  ceremonyLocation   String
+  receptionLocation  String?
+
+  // Section 2 – Garment Details
+  typeOfGown         String[]
+  desiredSilhouette  String
+  preferredNeckline  String?
+  sleevePreference   String?
+  trainLength        String[]
+
+  // Section 3 – Style Direction
+  threeWords         String?
+  feelWearing        String?
+  loveBodyParts      String?
+  softenConceal      String?
+
+  // Section 4 – Timeline & Investment
+  budgetRange        String[]
+  readyForDeposit    String?
+  paymentStructure   String?
+
+  // Section 5 – Brand Agreement
+  brandConfirmations String[]
+  declarationDate    String?
+
+  createdAt          DateTime @default(now())
+
+  @@index([emailAddress])
+}
+
+model Invoice {
+  id            String        @id @default(cuid())
+  invoiceNumber String        @unique
+  date          DateTime      @default(now())
+  dueDate       String?       // "On Receipt", "Net 30", etc. or a date
+  clientName    String
+  clientEmail   String?
+  clientPhone   String?
+  clientAddress String?
+  totalAmount   Float
+  balanceDue    Float
+  status        InvoiceStatus @default(PENDING)
+  items         InvoiceItem[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([invoiceNumber])
+}
+
+enum InvoiceStatus {
+  PENDING
+  PAID
+  CANCELLED
+}
+
+model InvoiceItem {
+  id          String   @id @default(cuid())
+  invoiceId   String
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  description String
+  rate        Float
+  quantity    Int
+  amount      Float
+}
