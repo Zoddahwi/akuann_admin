@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
+export const dynamic = 'force-dynamic';
+
 async function getInvoices() {
   try {
     return await prisma.invoice.findMany({

@@ -12,6 +12,8 @@ import {
   Clock
 } from "lucide-react";
 
+export const dynamic = 'force-dynamic';
+
 async function getClients() {
   try {
     return await prisma.clientOnboarding.findMany({
