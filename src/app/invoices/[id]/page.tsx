@@ -33,6 +33,12 @@ export default async function InvoicePage({ params }: PageProps) {
           Back to Invoices
         </Link>
         <div className="flex gap-3">
+          <Link
+            href={`/invoices/${invoice.id}/edit`}
+            className="flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-4 py-2 text-xs font-bold text-neutral-600 transition hover:bg-neutral-50 shadow-sm"
+          >
+            Edit Invoice
+          </Link>
           <InvoiceActions invoiceId={invoice.id} status={invoice.status} />
           <PrintButton />
         </div>
