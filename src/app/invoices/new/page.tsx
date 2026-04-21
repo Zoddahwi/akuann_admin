@@ -164,8 +164,8 @@ export default function NewInvoicePage() {
               <thead className="bg-neutral-900 text-white text-[10px] font-bold uppercase tracking-widest">
                 <tr>
                   <th className="px-6 py-3">Description</th>
-                  <th className="px-6 py-3 w-32">Rate (GH₵)</th>
                   <th className="px-6 py-3 w-24">Qty</th>
+                  <th className="px-6 py-3 w-32">Rate (GH₵)</th>
                   <th className="px-6 py-3 w-32">Amount</th>
                   <th className="px-6 py-3 w-12"></th>
                 </tr>
@@ -187,21 +187,21 @@ export default function NewInvoicePage() {
                       <input
                         type="number"
                         required
-                        step="0.01"
-                        value={item.rate || ""}
-                        onChange={(e) => updateItem(index, "rate", e.target.value)}
+                        value={item.quantity || ""}
+                        onChange={(e) => updateItem(index, "quantity", e.target.value)}
                         className="w-full bg-transparent border-none focus:ring-0 text-sm"
-                        placeholder="0.00"
+                        placeholder="1"
                       />
                     </td>
                     <td className="px-6 py-3">
                       <input
                         type="number"
                         required
-                        value={item.quantity || ""}
-                        onChange={(e) => updateItem(index, "quantity", e.target.value)}
+                        step="0.01"
+                        value={item.rate || ""}
+                        onChange={(e) => updateItem(index, "rate", e.target.value)}
                         className="w-full bg-transparent border-none focus:ring-0 text-sm"
-                        placeholder="1"
+                        placeholder="0.00"
                       />
                     </td>
                     <td className="px-6 py-3 text-sm font-semibold text-neutral-900">

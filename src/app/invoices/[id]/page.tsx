@@ -92,8 +92,8 @@ export default async function InvoicePage({ params }: PageProps) {
           <div className="min-w-[600px]">
             <div className="grid grid-cols-12 bg-neutral-900 text-white text-[10px] font-bold uppercase tracking-[0.2em] px-6 py-4">
               <div className="col-span-6">DESCRIPTION</div>
-              <div className="col-span-2 text-right">RATE</div>
               <div className="col-span-2 text-right">QTY</div>
+              <div className="col-span-2 text-right">RATE</div>
               <div className="col-span-2 text-right">AMOUNT</div>
             </div>
             <div className="divide-y divide-neutral-100 border-x border-b border-neutral-50 bg-white">
@@ -103,8 +103,8 @@ export default async function InvoicePage({ params }: PageProps) {
                   className={`grid grid-cols-12 px-6 py-5 text-sm ${index % 2 !== 0 ? 'bg-neutral-50/50' : 'bg-white'}`}
                 >
                   <div className="col-span-6 text-neutral-800 font-medium">{item.description}</div>
-                  <div className="col-span-2 text-right text-neutral-500">GH₵{item.rate.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                   <div className="col-span-2 text-right text-neutral-500">{item.quantity}</div>
+                  <div className="col-span-2 text-right text-neutral-500">GH₵{item.rate.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                   <div className="col-span-2 text-right text-neutral-900 font-semibold">GH₵{item.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                 </div>
               ))}
