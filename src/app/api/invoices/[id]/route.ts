@@ -12,6 +12,8 @@ export async function GET(
       include: { items: true },
     });
     if (!invoice) return NextResponse.json({ error: "Invoice not found" }, { status: 404 });
+    // @ts-ignore - isActive field will be available after migration
+    if (!invoice.isActive) return NextResponse.json({ error: "Invoice not found" }, { status: 404 });
     return NextResponse.json(invoice);
   } catch (error) {
     return NextResponse.json({ error: "Failed to fetch invoice" }, { status: 500 });
@@ -43,7 +45,10 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    await prisma.invoice.delete({ where: { id } });
+    await prisma.invoice.update({
+      where: { id },
+      data: { isActive: false },
+    });
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Failed to delete invoice" }, { status: 500 });

@@ -38,16 +38,14 @@ export default async function InvoicesListPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12">
-      <div className="mb-10 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-semibold text-neutral-900 tracking-tight">Invoice Management</h1>
-          <p className="mt-2 text-sm text-neutral-500">
-            Generate and track professional receipts for your bespoke services.
-          </p>
-        </div>
+      <div className="mb-10">
+        <h1 className="text-3xl font-semibold text-neutral-900 tracking-tight">Invoice Management</h1>
+        <p className="mt-2 text-sm text-neutral-500">
+          Generate and track professional receipts for your bespoke services.
+        </p>
         <Link 
           href="/invoices/new"
-          className="flex items-center gap-1.5 rounded-full bg-neutral-900 px-4 py-2 text-xs font-bold text-white transition hover:bg-neutral-800 active:scale-95 shadow-md"
+          className="inline-flex items-center gap-1.5 rounded-full bg-neutral-900 px-4 py-2 text-xs font-bold text-white transition hover:bg-neutral-800 active:scale-95 shadow-md mt-2"
         >
           <Plus size={16} />
           New Invoice
@@ -97,8 +95,9 @@ export default async function InvoicesListPage() {
         </div>
       ) : (
         <div className="overflow-hidden rounded-[32px] border border-neutral-200 bg-white shadow-sm">
-          <table className="w-full text-left border-collapse">
-            <thead className="bg-neutral-50/50 border-b border-neutral-100">
+          <div className="overflow-x-auto overflow-y-hidden">
+            <table className="w-full text-left border-collapse min-w-[800px]">
+              <thead className="bg-neutral-50/50 border-b border-neutral-100">
               <tr>
                 <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-neutral-400">Invoice</th>
                 <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-neutral-400">Client</th>
@@ -143,6 +142,7 @@ export default async function InvoicesListPage() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </div>

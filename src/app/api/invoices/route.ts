@@ -4,6 +4,8 @@ import { prisma } from "@/lib/db";
 export async function GET() {
   try {
     const invoices = await prisma.invoice.findMany({
+      // @ts-ignore - isActive field will be available after migration
+      where: { isActive: true },
       include: { items: true },
       orderBy: { createdAt: "desc" },
     });
@@ -32,14 +34,14 @@ export async function POST(req: Request) {
     });
 
     let nextNumber = 1;
-    if (lastInvoice && lastInvoice.invoiceNumber.startsWith("INV")) {
-      const match = lastInvoice.invoiceNumber.match(/INV(\d+)/);
+    if (lastInvoice) {
+      const match = lastInvoice.invoiceNumber.match(/(\d+)$/);
       if (match) {
         nextNumber = parseInt(match[1]) + 1;
       }
     }
 
-    const invoiceNumber = `INV${nextNumber.toString().padStart(4, "0")}`;
+    const invoiceNumber = `${clientName.replace(/\s+/g, '')}+Akuann_made+${nextNumber.toString().padStart(4, "0")}`;
 
     const invoice = await prisma.invoice.create({
       data: {
