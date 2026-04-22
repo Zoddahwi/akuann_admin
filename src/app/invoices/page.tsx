@@ -47,9 +47,9 @@ export default async function InvoicesListPage() {
         </div>
         <Link 
           href="/invoices/new"
-          className="flex items-center gap-2 rounded-full bg-neutral-900 px-6 py-3 text-sm font-bold text-white transition hover:bg-neutral-800 active:scale-95 shadow-xl"
+          className="flex items-center gap-1.5 rounded-full bg-neutral-900 px-4 py-2 text-xs font-bold text-white transition hover:bg-neutral-800 active:scale-95 shadow-md"
         >
-          <Plus size={18} />
+          <Plus size={16} />
           New Invoice
         </Link>
       </div>
