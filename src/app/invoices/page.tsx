@@ -13,10 +13,25 @@ import {
 import Link from "next/link";
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 30; // Revalidate every 30 seconds
 
 async function getInvoices() {
   try {
     return await prisma.invoice.findMany({
+      where: { 
+        // @ts-ignore - isActive field will be available after migration
+        isActive: true 
+      },
+      select: {
+        id: true,
+        invoiceNumber: true,
+        clientName: true,
+        clientEmail: true,
+        date: true,
+        status: true,
+        totalAmount: true,
+        createdAt: true,
+      },
       orderBy: { createdAt: "desc" },
     });
   } catch (error) {

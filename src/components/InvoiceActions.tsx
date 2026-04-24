@@ -15,6 +15,26 @@ export default function InvoiceActions({ invoiceId, status }: { invoiceId: strin
 
     if (response.ok) {
       router.refresh();
+      
+      // Generate receipt when status changes to PAID
+      if (newStatus === "PAID") {
+        console.log("Opening receipt for invoice:", invoiceId);
+        setTimeout(() => {
+          const receiptUrl = `/invoices/${invoiceId}/receipt`;
+          console.log("Opening receipt URL:", receiptUrl);
+          
+          // Try to open in new tab
+          const newWindow = window.open(receiptUrl, '_blank', 'noopener,noreferrer');
+          
+          // Fallback if popup is blocked
+          if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+            console.log("Popup blocked, redirecting to receipt");
+            window.location.href = receiptUrl;
+          }
+        }, 1000); // Increased timeout to ensure status is updated
+      }
+    } else {
+      console.error("Failed to update invoice status:", response.statusText);
     }
   };
 

@@ -55,9 +55,9 @@ export default async function InvoicePage({ params }: PageProps) {
               </h2>
             </div>
           </div>
-          <p className="text-sm text-neutral-500">Cemetary Road, Amasaman, Amasaman, Ghana</p>
-          <p className="text-sm text-neutral-500">0541023362</p>
-          <p className="text-sm text-neutral-500">akuanngh88@gmail.com</p>
+          <p className="text-sm text-neutral-500">Cemetary Road, Amasaman, Ghana</p>
+          <a href="tel:0541023362" className="text-sm text-neutral-500 hover:text-amber-600 transition-colors cursor-pointer">0541023362</a>
+          <a href="mailto:akuanngh88@gmail.com" className="text-sm text-neutral-500 hover:text-amber-600 transition-colors cursor-pointer">akuanngh88@gmail.com</a>
         </div>
 
         <div className="w-full h-px bg-neutral-100 mb-8" />
@@ -69,6 +69,20 @@ export default async function InvoicePage({ params }: PageProps) {
             <p className="text-xl font-bold text-neutral-900">{invoice.clientName}</p>
             {invoice.clientAddress && (
               <p className="text-sm text-neutral-500 mt-1 whitespace-pre-wrap">{invoice.clientAddress}</p>
+            )}
+            {invoice.clientPhone ? (
+              <a href={`tel:${invoice.clientPhone}`} className="text-sm text-neutral-500 hover:text-amber-600 transition-colors cursor-pointer mt-1 block">
+                {invoice.clientPhone}
+              </a>
+            ) : (
+              <p className="text-sm text-neutral-500 mt-1">No phone number</p>
+            )}
+            {invoice.clientEmail ? (
+              <a href={`mailto:${invoice.clientEmail}`} className="text-sm text-neutral-500 hover:text-amber-600 transition-colors cursor-pointer mt-1 block">
+                {invoice.clientEmail}
+              </a>
+            ) : (
+              <p className="text-sm text-neutral-500 mt-1">No email</p>
             )}
           </div>
           <div className="text-right md:text-left flex flex-col gap-6">
@@ -128,6 +142,29 @@ export default async function InvoicePage({ params }: PageProps) {
           <div className="w-full max-w-xs md:w-80 flex justify-between items-center py-2">
             <span className="font-bold uppercase tracking-widest text-neutral-900 text-[11px]">BALANCE DUE</span>
             <span className="text-xl font-bold text-neutral-900">GH₵{invoice.totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+          </div>
+        </div>
+
+        {/* Payment Details */}
+        <div className="mt-12 pt-8 border-t border-neutral-200">
+          <h3 className="text-[10px] font-bold uppercase tracking-widest text-neutral-400 mb-4">PAYMENT DETAILS</h3>
+          <div className="space-y-3 text-sm">
+            <div>
+              <span className="font-semibold text-neutral-700">Mobile Money (Momo):</span>
+              <a href="tel:0541023362" className="ml-2 text-neutral-600 hover:text-amber-600 transition-colors">0541023362</a>
+            </div>
+            <div>
+              <span className="font-semibold text-neutral-700">Bank Name:</span>
+              <span className="ml-2 text-neutral-600">First National Bank</span>
+            </div>
+            <div>
+              <span className="font-semibold text-neutral-700">Account Name:</span>
+              <span className="ml-2 text-neutral-600">Angela Obeng Boateng</span>
+            </div>
+            <div>
+              <span className="font-semibold text-neutral-700">Bank Account:</span>
+              <span className="ml-2 text-neutral-600">1011004642801</span>
+            </div>
           </div>
         </div>
 
