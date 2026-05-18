@@ -150,3 +150,137 @@ body {
   gap: 0.5rem;
   margin-top: 1rem;
 }
+
+/* ═══════════════════════════════════════════════════════
+   PREMIUM ANIMATION SYSTEM
+   ═══════════════════════════════════════════════════════ */
+
+/* Staggered Fade In Up */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  opacity: 0;
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: var(--delay, 0ms);
+}
+
+/* Ambient Floating Glows */
+@keyframes drift {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(40px, -60px) scale(1.15);
+  }
+  66% {
+    transform: translate(-30px, 30px) scale(0.9);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+@keyframes drift-reverse {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(-50px, 40px) scale(0.85);
+  }
+  66% {
+    transform: translate(40px, -30px) scale(1.2);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+.ambient-glow-1 {
+  position: absolute;
+  top: 10%;
+  left: 5%;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(178, 153, 138, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
+  filter: blur(40px);
+  z-index: -1;
+  pointer-events: none;
+  animation: drift 18s ease-in-out infinite;
+}
+
+.ambient-glow-2 {
+  position: absolute;
+  bottom: 15%;
+  right: 5%;
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(178, 153, 138, 0.06) 0%, rgba(255, 255, 255, 0) 70%);
+  filter: blur(50px);
+  z-index: -1;
+  pointer-events: none;
+  animation: drift-reverse 22s ease-in-out infinite;
+}
+
+/* Clean Grid Overlay */
+.bg-grid-overlay {
+  background-size: 30px 30px;
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.015) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.015) 1px, transparent 1px);
+  mask-image: radial-gradient(ellipse 65% 55% at 50% 50%, #000 60%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 65% 55% at 50% 50%, #000 60%, transparent 100%);
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+}
+
+/* Card Icon Hover Animation */
+@keyframes iconBounce {
+  0%, 100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-5px) scale(1.08) rotate(3deg);
+  }
+}
+
+.animate-icon-hover {
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.group:hover .animate-icon-hover {
+  animation: iconBounce 0.6s ease infinite alternate;
+}
+
+/* Interactive Mouse-Follow Aura */
+.mouse-aura {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(178, 153, 138, 0.42) 0%, rgba(178, 153, 138, 0.15) 45%, rgba(255, 255, 255, 0) 75%);
+  filter: blur(45px);
+  transform: translate3d(calc(var(--mouse-x, -999px) - 250px), calc(var(--mouse-y, -999px) - 250px), 0);
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0;
+  transition: transform 0.22s cubic-bezier(0.075, 0.82, 0.165, 1), opacity 0.6s ease;
+}
+
+.relative:hover .mouse-aura {
+  opacity: 1;
+}
+
+

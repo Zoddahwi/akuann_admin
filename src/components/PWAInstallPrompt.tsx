@@ -120,7 +120,7 @@ To test PWA installation:
   return (
     <>
       {/* Floating button (always visible when install is available) */}
-      <div className="fixed bottom-6 right-6 z-50 md:hidden">
+      <div className="fixed bottom-6 right-6 z-50 md:hidden no-print">
         <button
           onClick={() => {
             setIsAnimating(true);
@@ -144,7 +144,7 @@ To test PWA installation:
 
       {/* Modal */}
       {showModal && (
-        <div className={`fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity duration-300 ${isAnimating ? 'opacity-100' : 'opacity-0'}`}>
+        <div className={`fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-opacity duration-300 no-print ${isAnimating ? 'opacity-100' : 'opacity-0'}`}>
           <div className={`relative bg-white rounded-2xl p-8 max-w-sm w-full mx-4 shadow-2xl border border-neutral-100 transform transition-all duration-300 ${isAnimating ? 'scale-100 translate-y-0' : 'scale-95 translate-y-4'}`}>
             {/* Decorative elements */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-amber-100 to-transparent rounded-bl-2xl opacity-50"></div>

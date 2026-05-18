@@ -50,6 +50,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            @media print {
+              .no-print {
+                display: none !important;
+              }
+            }
+          `
+        }} />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-neutral-50 flex flex-col`}>
         <Navigation />
 

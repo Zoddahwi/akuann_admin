@@ -21,8 +21,12 @@ export function Navigation() {
     <header className={`sticky top-0 z-50 border-b border-neutral-200 transition-colors ${isOpen ? 'bg-white' : 'bg-white/80 backdrop-blur-lg'}`}>
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <Link href="/" className="flex items-center gap-2 group z-50">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-900 text-white transition-transform group-hover:scale-110">
-            <Scissors size={16} />
+          <div className="flex h-8 w-8 items-center justify-center transition-transform group-hover:scale-110">
+            <img 
+              src="/Akuann_logo.png" 
+              alt="Akuann Studio" 
+              className="h-full w-full object-contain"
+            />
           </div>
           <span className="text-sm font-bold uppercase tracking-[0.2em] text-neutral-900">Akuann Studio</span>
         </Link>
