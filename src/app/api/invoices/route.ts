@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { isAdmin } from "@/lib/auth-server";
 
 export async function GET() {
+  if (!(await isAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const invoices = await prisma.invoice.findMany({
       // @ts-ignore - isActive field will be available after migration
@@ -16,6 +18,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  if (!(await isAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const body = await req.json();
     const { 

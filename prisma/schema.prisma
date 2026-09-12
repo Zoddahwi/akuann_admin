@@ -80,40 +80,216 @@ model OrderItem {
 model ClientOnboarding {
   id                 String   @id @default(cuid())
 
-  // Section 1 – Client Information
+  // ── 01 The Bride ──────────────────────────────────────────────────
   fullName           String
-  phoneNumber        String
+  preferredName      String?
+  phoneNumber        String              // WhatsApp / Phone
   emailAddress       String
   instagramHandle    String?
-  eventDate          String?
-  ceremonyLocation   String
-  receptionLocation  String?
+  hearAboutUs        String?
 
-  // Section 2 – Garment Details
+  // ── 02 Your Wedding ───────────────────────────────────────────────
+  eventDate          String?             // Wedding date
+  ceremonyLocation   String              // Wedding location / venue
+  weddingCityCountry String?
+  weddingTypes       String[]
+  weddingStyleTheme  String?
+  guestCount         String?
+  weddingPlanner     String?
+
+  // ── 03 Your Bridal Look ───────────────────────────────────────────
+  bridalServices     String[]
+  numberOfLooks      String?
+  dreamGownDescription String?
+
+  // ── 04 Your Bridal Aesthetic ──────────────────────────────────────
+  visionWords        String[]
+  silhouettePrefs    String[]
+  necklinePrefs      String[]
+  sleevePrefs        String[]
+  trainPrefs         String[]
+
+  // ── 05 Fabric, Colour & Embellishment ─────────────────────────────
+  bridalColour       String[]
+  bridalColourOther  String?
+  fabricPrefs        String[]
+  embellishmentPrefs String[]
+  hasFabric          String?
+  fabricImageUrl     String?
+
+  // ── 06 Your Inspiration ───────────────────────────────────────────
+  hasInspiration     String?
+  inspirationImageUrls String[]
+  lovedElements      String?
+  avoidedElements    String?
+  moodBoardLink      String?
+
+  // ── 07 Bridal Party ───────────────────────────────────────────────
+  bridalPartyOutfits String?
+  bridalPartyMembers String[]
+  bridalPartyCount   String?
+  bridalPartyColours String?
+  bridalPartyCoordination String?
+
+  // ── 08 Fit & Personal Preferences ─────────────────────────────────
+  preferredFit       String?
+  attentionAreas     String?
+  avoidFeatures      String?
+  comfortRequirements String?
+
+  // ── 09 Your Investment ────────────────────────────────────────────
+  investmentRange    String?
+  looksCovered       String?
+
+  // ── 10 Timeline ───────────────────────────────────────────────────
+  desiredCompletionDate String?
+  dateFlexibility    String?
+  isRushOrder        String?
+  rushTimeline       String?
+  bookedAnotherDesigner String?
+
+  // ── 11 Consultation preferences ───────────────────────────────────
+  // Indicative only. The binding appointment is made through the
+  // booking link the bride receives once the designer accepts her.
+  preferredConsultFormat String?
+  preferredConsultDate   String?
+  preferredConsultTime   String?
+  consultationGoals      String?
+  consultantNotes        String?
+
+  // ── 12 Bridal Client Acknowledgement ──────────────────────────────
+  acknowledgements   String[]
+  declarationName    String?
+  agreedToTerms      Boolean  @default(false)
+
+  // ── Legacy (pre-2026-08 form) — retained so old rows still read ───
+  receptionLocation  String?
   typeOfGown         String[]
-  desiredSilhouette  String
+  desiredSilhouette  String?
   preferredNeckline  String?
   sleevePreference   String?
   trainLength        String[]
-
-  // Section 3 – Style Direction
   threeWords         String?
   feelWearing        String?
   loveBodyParts      String?
   softenConceal      String?
-
-  // Section 4 – Timeline & Investment
   budgetRange        String[]
   readyForDeposit    String?
   paymentStructure   String?
-
-  // Section 5 – Brand Agreement
   brandConfirmations String[]
   declarationDate    String?
 
+  // ── Designer review ───────────────────────────────────────────────
+  status                OnboardingStatus @default(PENDING_REVIEW)
+  reviewNote            String?
+  reviewedBy            String?
+  reviewedAt            DateTime?
+
+  // ── Consultation booking link ─────────────────────────────────────
+  bookingToken          String?   @unique
+  bookingTokenExpiresAt DateTime?
+
+  consultation       Consultation?
+  measurementSheet   MeasurementSheet?
+
   createdAt          DateTime @default(now())
+  updatedAt          DateTime @default(now()) @updatedAt
 
   @@index([emailAddress])
+  @@index([status])
+}
+
+enum OnboardingStatus {
+  PENDING_REVIEW
+  ACCEPTED
+  DECLINED
+  CONSULTATION_BOOKED
+  CONSULTED
+}
+
+enum ConsultationFormat {
+  IN_PERSON
+  VIRTUAL
+}
+
+enum ConsultationStatus {
+  BOOKED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+model Consultation {
+  id              String             @id @default(cuid())
+  onboardingId    String             @unique
+  onboarding      ClientOnboarding   @relation(fields: [onboardingId], references: [id], onDelete: Cascade)
+
+  scheduledAt     DateTime
+  durationMinutes Int                @default(60)
+  format          ConsultationFormat @default(IN_PERSON)
+  location        String?
+  meetingLink     String?
+  status          ConsultationStatus @default(BOOKED)
+
+  clientNote      String?
+  studioNote      String?
+
+  measurementSheet MeasurementSheet?
+
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @default(now()) @updatedAt
+
+  @@index([scheduledAt])
+  @@index([status])
+}
+
+model MeasurementSheet {
+  id               String            @id @default(cuid())
+  onboardingId     String            @unique
+  onboarding       ClientOnboarding  @relation(fields: [onboardingId], references: [id], onDelete: Cascade)
+  consultationId   String?           @unique
+  consultation     Consultation?     @relation(fields: [consultationId], references: [id])
+
+  takenBy          String?
+
+  // Body info
+  height           String?
+  weight           String?
+  braSize          String?
+  dressSize        String?
+  shoeSize         String?
+
+  // Upper body
+  bust             String?
+  underbust        String?
+  highBust         String?
+  shoulderWidth    String?
+  neck             String?
+  shoulderToWaist  String?
+
+  // Lower body
+  waist            String?
+  hip              String?
+  waistToFloor     String?
+  shoulderToFloor  String?
+
+  // Arms
+  armhole          String?
+  bicep            String?
+  sleeveLength     String?
+
+  // Fit & style
+  preferredFit     String?
+  corsetPref       String?
+  heelHeight       String?
+  trainLength      String?
+
+  // Accuracy
+  posture          String?
+  notes            String?
+
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @default(now()) @updatedAt
 }
 
 model Invoice {

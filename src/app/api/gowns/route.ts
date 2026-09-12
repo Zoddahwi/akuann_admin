@@ -1,7 +1,9 @@
 import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
+import { isAdmin } from "@/lib/auth-server";
 
 export async function POST(req: Request) {
+  if (!(await isAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const data = await req.json();
     const gown = await prisma.gown.create({
@@ -25,6 +27,7 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
+  if (!(await isAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1");

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { Scissors, User, CheckCircle2 } from "lucide-react";
+import { Scissors, User, CheckCircle2, CalendarCheck } from "lucide-react";
 
 export default function AdminDashboardPage() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -87,11 +87,26 @@ export default function AdminDashboardPage() {
             </div>
             <h2 className="text-xl font-bold text-neutral-900 tracking-tight">Onboarding</h2>
             <p className="mt-2.5 text-sm text-neutral-500 leading-relaxed line-clamp-2">
-              Review detailed client style profiles, measurements, and event timelines.
+              Review bridal enquiries, then accept or decline to send a consultation link.
             </p>
           </Link>
-          
-          {/* Card 3: Orders */}
+
+          {/* Card 3: Consultations */}
+          <Link
+            href="/consultations"
+            className="group relative overflow-hidden rounded-[32px] border border-neutral-200/80 bg-white/70 backdrop-blur-md p-8 transition-all hover:border-neutral-900 hover:shadow-2xl hover:-translate-y-1.5 animate-fade-in-up"
+            style={{ '--delay': '350ms' } as React.CSSProperties}
+          >
+            <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-neutral-900 text-white transition-colors group-hover:bg-neutral-800">
+              <CalendarCheck size={20} className="animate-icon-hover" />
+            </div>
+            <h2 className="text-xl font-bold text-neutral-900 tracking-tight">Consultations</h2>
+            <p className="mt-2.5 text-sm text-neutral-500 leading-relaxed line-clamp-2">
+              See booked appointments and record measurements during the consultation.
+            </p>
+          </Link>
+
+          {/* Card 4: Orders */}
           <Link 
             href="/orders" 
             className="group relative overflow-hidden rounded-[32px] border border-neutral-200/80 bg-white/70 backdrop-blur-md p-8 transition-all hover:border-neutral-900 hover:shadow-2xl hover:-translate-y-1.5 animate-fade-in-up"

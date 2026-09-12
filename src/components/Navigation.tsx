@@ -3,16 +3,19 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { ShoppingBag, User as UserIcon, Scissors, Home, FileText, Menu, X } from "lucide-react";
+import { ShoppingBag, User as UserIcon, Scissors, Home, FileText, CalendarCheck, Menu, X } from "lucide-react";
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
+  if (pathname === "/login") return null;
+
   const navItems = [
     { href: "/", label: "Home", icon: Home },
     { href: "/gowns", label: "Gowns", icon: Scissors },
     { href: "/clients", label: "Clients", icon: UserIcon },
+    { href: "/consultations", label: "Consultations", icon: CalendarCheck },
     { href: "/orders", label: "Orders", icon: ShoppingBag },
     { href: "/invoices", label: "Invoices", icon: FileText },
   ];
@@ -52,6 +55,9 @@ export function Navigation() {
           <div className="hidden md:flex items-center gap-4">
             <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
             <span className="text-[10px] font-bold uppercase tracking-widest text-neutral-400">Portal Active</span>
+            <form action="/api/auth/logout" method="post">
+              <button type="submit" className="text-[10px] font-bold uppercase tracking-widest text-neutral-500 transition hover:text-neutral-900">Sign out</button>
+            </form>
           </div>
 
           {/* Mobile Menu Toggle */}
