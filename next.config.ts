@@ -21,6 +21,14 @@ const withPWA = require("next-pwa")({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   turbopack: {},
+  // Next traces `pg-cloudflare` under Node conditions, where its exports resolve
+  // to dist/empty.js, so dist/index.js never reaches the standalone output.
+  // OpenNext then bundles the worker under the `workerd` condition, which does
+  // require dist/index.js, and esbuild fails to resolve it. Pull the whole
+  // package into the trace so the file is there when the worker is bundled.
+  outputFileTracingIncludes: {
+    "/**": ["./node_modules/pg-cloudflare/**/*"],
+  },
 };
 
 module.exports = withPWA(nextConfig);
