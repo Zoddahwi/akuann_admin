@@ -20,6 +20,16 @@
   "images": {
     "binding": "IMAGES"
   },
+  // Workers cannot complete the Postgres STARTTLS upgrade against Supabase's
+  // pooler: the handshake succeeds and the first write then fails with
+  // "Network connection lost". Hyperdrive terminates that connection off-isolate
+  // and hands the Worker a local, plaintext connection string instead.
+  "hyperdrive": [
+    {
+      "binding": "HYPERDRIVE",
+      "id": "be5011a183b34fea813574e33eb755a3"
+    }
+  ],
   "observability": {
     "enabled": true
   }
