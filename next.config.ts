@@ -33,4 +33,10 @@ const nextConfig = {
 
 module.exports = withPWA(nextConfig);
 
-import('@opennextjs/cloudflare').then(m => m.initOpenNextCloudflareForDev());
+// Dev only. This spins up the Cloudflare dev platform so `next dev` can see
+// bindings, and next.config.ts is evaluated for `next build` too. Since the
+// Hyperdrive binding was added it throws during a build, because a build
+// environment has no local Postgres to emulate Hyperdrive against.
+if (process.env.NODE_ENV === 'development') {
+  import('@opennextjs/cloudflare').then(m => m.initOpenNextCloudflareForDev());
+}
