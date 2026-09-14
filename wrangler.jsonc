@@ -27,7 +27,13 @@
   "hyperdrive": [
     {
       "binding": "HYPERDRIVE",
-      "id": "be5011a183b34fea813574e33eb755a3"
+      "id": "be5011a183b34fea813574e33eb755a3",
+      // Unused placeholder. `opennextjs-cloudflare deploy` boots miniflare to
+      // read env vars, and miniflare refuses to start unless every Hyperdrive
+      // binding has a local string, even when the command is a deploy. The real
+      // local value goes in CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE
+      // (see .env.example), which takes precedence over this.
+      "localConnectionString": "postgresql://postgres:postgres@localhost:5432/postgres"
     }
   ],
   "observability": {
