@@ -1,5 +1,9 @@
 generator client {
-  provider = "prisma-client-js"
+  provider   = "prisma-client-js"
+  // Cloudflare Workers cannot load Prisma's native Rust query engine. The
+  // "client" engine compiles queries in WASM and talks to Postgres through the
+  // driver adapter in src/lib/db.ts instead.
+  engineType = "client"
 }
 
 datasource db {
