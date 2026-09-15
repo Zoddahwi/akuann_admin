@@ -2,6 +2,7 @@
 // Forced re-compile to ensure Client Component directive is recognized.
 
 import React, { useState, useEffect } from "react";
+import LiveRefresh from "@/components/LiveRefresh";
 import { Scissors, Plus, Star, Eye, ChevronLeft, ChevronRight } from "lucide-react";
 import GownModal from "@/components/GownModal";
 
@@ -50,6 +51,10 @@ export default function AdminGownsPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12">
+      <LiveRefresh
+        watch={["gowns"]}
+        onChange={() => fetchGowns(currentPage, activeCategory)}
+      />
       <div className="mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
         <div>
           <h1 className="text-3xl font-semibold text-neutral-900 tracking-tight">Collection Management</h1>

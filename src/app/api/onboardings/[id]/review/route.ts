@@ -4,6 +4,7 @@ import path from "path";
 import { prisma } from "@/lib/db";
 import { acceptanceEmail, declineEmail, resendEmail, sendEmail } from "@/lib/mailer";
 import { isAdmin } from "@/lib/auth-server";
+import { notifyChange } from "@/lib/realtime-server";
 
 export const dynamic = "force-dynamic";
 
@@ -87,6 +88,7 @@ export async function POST(
         })
       );
 
+      notifyChange("clients", id);
       return NextResponse.json({ success: true, status: updated.status, emailSent: mailed });
     }
 
@@ -151,6 +153,7 @@ export async function POST(
 
     // The link is returned so the designer can also send it over WhatsApp,
     // which matters when email delivery is slow or the bride misses it.
+    notifyChange("clients", id);
     return NextResponse.json({
       success: true,
       status: "ACCEPTED",

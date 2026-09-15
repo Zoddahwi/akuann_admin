@@ -1,3 +1,4 @@
+import LiveRefresh from "@/components/LiveRefresh";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
@@ -44,6 +45,7 @@ export default async function ConsultationDetailPage({
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
+      <LiveRefresh watch={["consultations", "measurements"]} />
       <Link
         href="/consultations"
         className="mb-8 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-neutral-400 transition hover:text-neutral-900"

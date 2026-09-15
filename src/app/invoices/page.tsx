@@ -1,3 +1,4 @@
+import LiveRefresh from "@/components/LiveRefresh";
 import { prisma } from "@/lib/db";
 import { format } from "date-fns";
 import { 
@@ -53,6 +54,7 @@ export default async function InvoicesListPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12">
+      <LiveRefresh watch={["invoices"]} />
       <div className="mb-10">
         <h1 className="text-3xl font-semibold text-neutral-900 tracking-tight">Invoice Management</h1>
         <p className="mt-2 text-sm text-neutral-500">

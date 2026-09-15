@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { isAdmin } from "@/lib/auth-server";
+import { notifyChange } from "@/lib/realtime-server";
 
 export const dynamic = "force-dynamic";
 
@@ -81,6 +82,11 @@ export async function POST(req: Request) {
       });
     }
 
+    notifyChange("measurements", onboardingId);
+    if (completeConsultation && consultationId) {
+      notifyChange("consultations", consultationId);
+      notifyChange("clients", onboardingId);
+    }
     return NextResponse.json({ success: true, sheet });
   } catch (error) {
     console.error("Measurement save error:", error);

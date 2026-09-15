@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { isAdmin } from "@/lib/auth-server";
+import { notifyChange } from "@/lib/realtime-server";
 
 export const dynamic = "force-dynamic";
 
@@ -60,6 +61,10 @@ export async function PATCH(
       });
     }
 
+    notifyChange("consultations", id);
+    // The bride's journey status moves with the appointment, so client views
+    // need to update too.
+    notifyChange("clients", consultation.onboardingId);
     return NextResponse.json({ success: true, consultation: updated });
   } catch (error) {
     console.error("Consultation update error:", error);

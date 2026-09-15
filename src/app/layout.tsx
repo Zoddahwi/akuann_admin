@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navigation } from "@/components/Navigation";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
+import { RealtimeProvider } from "@/components/RealtimeProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +40,14 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * Rendered per request so the layout can read the Supabase values from the
+ * runtime environment. They are Worker secrets, absent at build time, and a
+ * prerendered layout would bake in `undefined` and silently disable live
+ * updates on the statically rendered routes.
+ */
+export const dynamic = "force-dynamic";
+
 export const viewport = {
   themeColor: "#000000",
 };
@@ -62,6 +71,10 @@ export default function RootLayout({
         }} />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-neutral-50 flex flex-col`}>
+        <RealtimeProvider
+          url={process.env.NEXT_PUBLIC_SUPABASE_URL}
+          anonKey={process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}
+        >
         <Navigation />
 
         <main className="flex-1">
@@ -75,6 +88,7 @@ export default function RootLayout({
         </footer>
 
         <PWAInstallPrompt />
+        </RealtimeProvider>
       </body>
     </html>
   );

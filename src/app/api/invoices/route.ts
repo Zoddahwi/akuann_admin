@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { isAdmin } from "@/lib/auth-server";
+import { notifyChange } from "@/lib/realtime-server";
 
 export async function GET() {
   if (!(await isAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -68,6 +69,7 @@ export async function POST(req: Request) {
       },
     });
 
+    notifyChange("invoices", invoice.id);
     return NextResponse.json(invoice);
   } catch (error) {
     console.error("Invoice creation error:", error);

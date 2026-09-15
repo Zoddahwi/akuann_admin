@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { isAdmin } from "@/lib/auth-server";
+import { notifyChange } from "@/lib/realtime-server";
 
 export async function POST(req: Request) {
   if (!(await isAdmin())) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -19,6 +20,8 @@ export async function POST(req: Request) {
         reviewsCount: 0,
       },
     });
+
+    notifyChange("gowns", gown.id);
     return NextResponse.json(gown);
   } catch (error) {
     console.error("Error creating gown:", error);

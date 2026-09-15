@@ -1,3 +1,4 @@
+import LiveRefresh from "@/components/LiveRefresh";
 import { prisma } from "@/lib/db";
 import { format } from "date-fns";
 import { notFound } from "next/navigation";
@@ -24,6 +25,7 @@ export default async function InvoicePage({ params }: PageProps) {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 md:py-20">
+      <LiveRefresh watch={["invoices"]} />
       <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4 no-print">
         <Link
           href="/invoices"

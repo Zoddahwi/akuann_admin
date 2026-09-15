@@ -1,3 +1,4 @@
+import LiveRefresh from "@/components/LiveRefresh";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
@@ -53,6 +54,7 @@ export default async function ClientSubmissionPage({
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-12">
+      <LiveRefresh watch={["clients", "measurements"]} />
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4 no-print">
         <Link
           href="/clients"

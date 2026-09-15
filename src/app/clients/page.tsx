@@ -1,3 +1,4 @@
+import LiveRefresh from "@/components/LiveRefresh";
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { format } from "date-fns";
@@ -90,6 +91,7 @@ export default async function AdminClientsPage({
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12">
+      <LiveRefresh watch={["clients", "measurements"]} />
       <div className="mb-8 flex flex-wrap items-end justify-between gap-6">
         <div>
           <h1 className="text-3xl font-semibold tracking-tight text-neutral-900">

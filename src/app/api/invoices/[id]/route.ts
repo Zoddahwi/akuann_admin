@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { isAdmin } from "@/lib/auth-server";
+import { notifyChange } from "@/lib/realtime-server";
 
 export async function GET(
   req: Request,
@@ -36,6 +37,7 @@ export async function PATCH(
       data: { status },
     });
 
+    notifyChange("invoices", id);
     return NextResponse.json(invoice);
   } catch (error) {
     return NextResponse.json({ error: "Failed to update invoice" }, { status: 500 });
@@ -53,6 +55,8 @@ export async function DELETE(
       where: { id },
       data: { isActive: false },
     });
+
+    notifyChange("invoices", id);
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: "Failed to delete invoice" }, { status: 500 });
@@ -108,6 +112,7 @@ export async function PUT(
       });
     }
 
+    notifyChange("invoices", id);
     return NextResponse.json(invoice);
   } catch (error) {
     console.error("Failed to update invoice:", error);
