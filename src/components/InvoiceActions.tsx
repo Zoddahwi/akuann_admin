@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle2, XCircle, Trash2 } from "lucide-react";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 export default function InvoiceActions({ invoiceId, status }: { invoiceId: string, status: string }) {
   const router = useRouter();
@@ -10,6 +11,7 @@ export default function InvoiceActions({ invoiceId, status }: { invoiceId: strin
   // These actions used to fail silently: a request that did not succeed left
   // the button looking like it had done nothing at all.
   const [error, setError] = useState<string | null>(null);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   const updateStatus = async (newStatus: string) => {
     setBusy(true);
@@ -50,8 +52,6 @@ export default function InvoiceActions({ invoiceId, status }: { invoiceId: strin
   };
 
   const deleteInvoice = async () => {
-    if (!confirm("Are you sure you want to delete this invoice? This can be restored later.")) return;
-
     setBusy(true);
     setError(null);
     try {
@@ -72,8 +72,23 @@ export default function InvoiceActions({ invoiceId, status }: { invoiceId: strin
       setError("Could not reach the server. Check your connection and try again.");
     } finally {
       setBusy(false);
+      setConfirmingDelete(false);
     }
   };
+
+  const dialog = (
+    <ConfirmDialog
+      open={confirmingDelete}
+      busy={busy}
+      destructive
+      title="Delete this invoice?"
+      message="It will be removed from your invoice list. Nothing is erased, so it can be restored later."
+      confirmLabel="Delete invoice"
+      cancelLabel="Keep it"
+      onConfirm={deleteInvoice}
+      onCancel={() => setConfirmingDelete(false)}
+    />
+  );
 
   const notice = error ? (
     <p role="alert" className="w-full text-xs font-bold text-red-600">
@@ -92,7 +107,7 @@ export default function InvoiceActions({ invoiceId, status }: { invoiceId: strin
         Mark as Pending
       </button>
       <button
-        onClick={deleteInvoice}
+        onClick={() => setConfirmingDelete(true)}
         disabled={busy}
         className="flex items-center gap-2 rounded-full border border-red-200 bg-white px-4 py-2 text-xs font-bold text-red-600 transition hover:bg-red-50 active:scale-95 shadow-sm disabled:opacity-50"
       >
@@ -100,6 +115,7 @@ export default function InvoiceActions({ invoiceId, status }: { invoiceId: strin
         {busy ? "Working…" : "Delete"}
       </button>
       {notice}
+      {dialog}
     </div>
   );
 
@@ -122,7 +138,7 @@ export default function InvoiceActions({ invoiceId, status }: { invoiceId: strin
         Cancel
       </button>
       <button
-        onClick={deleteInvoice}
+        onClick={() => setConfirmingDelete(true)}
         disabled={busy}
         className="flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-4 py-2 text-sm font-bold text-neutral-600 transition hover:bg-neutral-50 active:scale-95 shadow-sm disabled:opacity-50"
       >
@@ -130,6 +146,7 @@ export default function InvoiceActions({ invoiceId, status }: { invoiceId: strin
         {busy ? "Working…" : "Delete"}
       </button>
       {notice}
+      {dialog}
     </div>
   );
 }
