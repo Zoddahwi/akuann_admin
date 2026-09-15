@@ -33,6 +33,13 @@
       // binding has a local string, even when the command is a deploy. The real
       // local value goes in CLOUDFLARE_HYPERDRIVE_LOCAL_CONNECTION_STRING_HYPERDRIVE
       // (see .env.example), which takes precedence over this.
+      //
+      // Query caching is turned off on this config (`wrangler hyperdrive update
+      // <id> --caching-disabled`). It is on by default and served reads up to a
+      // minute stale, which showed up as a deleted invoice still appearing in
+      // the list. Live updates are pointless if the refresh they trigger can
+      // return stale rows, and this is a low-traffic admin dashboard where
+      // freshness is worth more than cache hits.
       "localConnectionString": "postgresql://postgres:postgres@localhost:5432/postgres"
     }
   ],
