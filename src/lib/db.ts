@@ -5,31 +5,15 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 type HyperdriveBinding = { connectionString: string };
 
 /**
- * Workers tie every socket to the request that opened it, so a client cached in
- * module scope works on an isolate's first request and then hangs forever on
- * the next one ("the Workers runtime canceled this request because it detected
- * that your Worker's code had hung"). Detect the runtime the same way `pg`
- * does, and keep one client per request there.
+ * Workers tie every socket to the request that opened it, so a connection
+ * cached in the isolate makes later requests hang ("the Workers runtime
+ * canceled this request because it detected that your Worker's code had hung").
+ * Detected the same way `pg` detects it.
  */
 const onWorkers =
   typeof navigator === "object" &&
   navigator !== null &&
   navigator.userAgent === "Cloudflare-Workers";
-
-function createPrismaClient(connectionString: string | undefined, viaHyperdrive: boolean) {
-  // Hyperdrive pools on its own, so the adapter can keep a normal local pool.
-  // Talking to PgBouncer directly is the case that needs max=1: it runs in
-  // transaction mode, which conflicts with Prisma's own pool and causes
-  // connection storms and 10054 ConnectionReset errors.
-  const adapter = new PrismaPg(
-    viaHyperdrive ? { connectionString } : { connectionString, max: 1 },
-  );
-
-  return new PrismaClient({
-    adapter,
-    log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
-  });
-}
 
 /**
  * On Workers, connect through the Hyperdrive binding rather than straight to
@@ -41,54 +25,56 @@ function createPrismaClient(connectionString: string | undefined, viaHyperdrive:
  *
  * `next dev` runs on Node, where DATABASE_URL works directly.
  */
-function buildClient() {
+function resolveConnection() {
   try {
     const { env } = getCloudflareContext();
     const hyperdrive = (env as unknown as { HYPERDRIVE?: HyperdriveBinding }).HYPERDRIVE;
     if (hyperdrive?.connectionString) {
-      return createPrismaClient(hyperdrive.connectionString, true);
+      return { connectionString: hyperdrive.connectionString, viaHyperdrive: true };
     }
   } catch {
     // No Cloudflare context: running under plain Node.
   }
 
-  return createPrismaClient(process.env.DATABASE_URL, false);
+  return { connectionString: process.env.DATABASE_URL, viaHyperdrive: false };
 }
 
-// One client per request on Workers, keyed by that request's ExecutionContext.
-const perRequestClients = new WeakMap<object, PrismaClient>();
+function createPrismaClient() {
+  const { connectionString, viaHyperdrive } = resolveConnection();
 
-// A single pooled client off Workers, so `next dev` does not open a new pool
-// (and leak a Supabase connection) on every request.
+  // maxUses=1 makes the pool discard a connection as soon as it is released, so
+  // no socket is ever handed to a later request. That is what lets a single
+  // client be reused across requests on Workers: building a PrismaClient costs
+  // real CPU (roughly 60-90ms per request when done per request, against ~30ms
+  // total for a route that does not touch the database), and the CPU limit is
+  // charged per request.
+  //
+  // Off Workers, ordinary pooling is fine. max=1 there is for talking to
+  // PgBouncer directly: it runs in transaction mode, which conflicts with
+  // Prisma's own pool and causes connection storms and 10054 ConnectionReset
+  // errors. Hyperdrive does its own pooling, so it does not need the cap.
+  const poolConfig = onWorkers
+    ? { connectionString, max: 5, maxUses: 1 }
+    : { connectionString, max: viaHyperdrive ? 10 : 1 };
+
+  return new PrismaClient({
+    adapter: new PrismaPg(poolConfig),
+    log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
+  });
+}
+
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
-let nodeClient: PrismaClient | undefined = globalForPrisma.prisma;
 
-function getClient(): PrismaClient {
-  if (onWorkers) {
-    let key: object | undefined;
-    try {
-      key = getCloudflareContext().ctx as unknown as object;
-    } catch {
-      // Outside a request context; fall through to a one-off client.
-    }
+let client: PrismaClient | undefined = globalForPrisma.prisma;
 
-    if (!key) return buildClient();
-
-    let client = perRequestClients.get(key);
-    if (!client) {
-      client = buildClient();
-      perRequestClients.set(key, client);
-    }
-    return client;
-  }
-
-  if (!nodeClient) {
-    nodeClient = buildClient();
+function getClient() {
+  if (!client) {
+    client = createPrismaClient();
     if (process.env.NODE_ENV !== "production") {
-      globalForPrisma.prisma = nodeClient;
+      globalForPrisma.prisma = client;
     }
   }
-  return nodeClient;
+  return client;
 }
 
 // Bindings and environment variables are only available while a request is
