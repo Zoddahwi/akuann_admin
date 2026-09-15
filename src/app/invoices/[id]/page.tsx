@@ -19,7 +19,11 @@ export default async function InvoicePage({ params }: PageProps) {
     include: { items: true },
   });
 
-  if (!invoice) {
+  // Deleting an invoice is a soft delete, and this page was the one place that
+  // still rendered a deleted one: the list, the receipt page and the API all
+  // hide it. That is what made Delete look like it had done nothing -- the row
+  // was already isActive=false while this page kept showing it in full.
+  if (!invoice || !invoice.isActive) {
     notFound();
   }
 
